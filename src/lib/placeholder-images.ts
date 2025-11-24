@@ -1,10 +1,11 @@
 import data from './placeholder-images.json';
 
-export type ImagePlaceholder = {
+export type AnimePlaceholder = {
   id: string;
+  title: string;
   description: string;
   imageUrl: string;
   imageHint: string;
 };
 
-export const PlaceHolderImages: ImagePlaceholder[] = data.placeholderImages;
+export const animePlaceholders: AnimePlaceholder[] = data.placeholderImages;

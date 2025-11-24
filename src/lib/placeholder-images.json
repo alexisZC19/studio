@@ -1,3 +1,60 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "anime_1",
+      "title": "Starlight Odyssey",
+      "description": "A journey through a galaxy filled with magic and mystery.",
+      "imageUrl": "https://images.unsplash.com/photo-1445905595283-21f8ae8a33d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnYWxheHklMjBzdGFyc3xlbnwwfHx8fDE3NjM5NjE3OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "galaxy stars"
+    },
+    {
+      "id": "anime_2",
+      "title": "Cybernetic Ronin",
+      "description": "In a neon-lit city, a lone warrior seeks vengeance.",
+      "imageUrl": "https://images.unsplash.com/photo-1602136773736-34d445b989cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjeWJlcnB1bmslMjBjaXR5fGVufDB8fHx8MTc2MzkyNTQ4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyberpunk city"
+    },
+    {
+      "id": "anime_3",
+      "title": "Whispering Woods",
+      "description": "Ancient spirits and a young girl protect a sacred forest.",
+      "imageUrl": "https://images.unsplash.com/photo-1620752288761-b94d8553ccc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxlbmNoYW50ZWQlMjBmb3Jlc3R8ZW58MHx8fHwxNzYzODkxMzkwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "enchanted forest"
+    },
+    {
+      "id": "anime_4",
+      "title": "The Alchemist's Legacy",
+      "description": "Two siblings uncover a dark secret about their family's past.",
+      "imageUrl": "https://images.unsplash.com/photo-1654663477425-acf704a970d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhbGNoZW15JTIwc3ltYm9sc3xlbnwwfHx8fDE3NjM5OTg0NzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "alchemy symbols"
+    },
+    {
+      "id": "anime_5",
+      "title": "Ocean's Song",
+      "description": "A tale of pirates, treasures, and a legendary sea monster.",
+      "imageUrl": "https://images.unsplash.com/photo-1505142468610-359e7d316be0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvY2VhbiUyMHdhdmVzfGVufDB8fHx8MTc2Mzk3NDE4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ocean waves"
+    },
+    {
+      "id": "anime_6",
+      "title": "Chrono Drifters",
+      "description": "A group of teens accidentally travels through time.",
+      "imageUrl": "https://images.unsplash.com/photo-1554378739-200b04da4e8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0aW1lJTIwdHJhdmVsfGVufDB8fHx8MTc2Mzk4MjQzOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "time travel"
+    },
+    {
+      "id": "anime_7",
+      "title": "Soul Symphony",
+      "description": "Musicians battle with supernatural powers in an epic contest.",
+      "imageUrl": "https://images.unsplash.com/photo-1650902565793-c2eb262aefbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMG5vdGVzfGVufDB8fHx8MTc2Mzk5ODQ3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "music notes"
+    },
+    {
+      "id": "anime_8",
+      "title": "Kingdom of Blades",
+      "description": "A civil war threatens to tear a medieval kingdom apart.",
+      "imageUrl": "https://images.unsplash.com/photo-1554996560-41f5023d85d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtZWRpZXZhbCUyMGNhc3RsZXxlbnwwfHx8fDE3NjM5MTkyMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medieval castle"
+    }
+  ]
 }
