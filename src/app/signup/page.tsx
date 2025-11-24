@@ -3,10 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,6 +24,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { initiateEmailSignUp, useAuth, useUser } from "@/firebase";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -37,6 +37,9 @@ const formSchema = z.object({
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
+  const { user } = useUser();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,9 +48,15 @@ export default function SignupPage() {
     },
   });
 
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await createUserWithEmailAndPassword(
+      initiateEmailSignUp(
         auth,
         values.email,
         values.password
@@ -56,7 +65,7 @@ export default function SignupPage() {
         title: "Account Created",
         description: "You have been successfully signed up!",
       });
-      router.push("/");
+      // The redirect is now handled by the useEffect hook
     } catch (error: any) {
       toast({
         variant: "destructive",

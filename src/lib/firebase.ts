@@ -3,6 +3,7 @@
 import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics, isSupported as isAnalyticsSupported, Analytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
 // IMPORTANT: Replace with your own Firebase configuration
 const firebaseConfig: FirebaseOptions = {
@@ -17,14 +18,12 @@ const firebaseConfig: FirebaseOptions = {
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
+const firestore = getFirestore(app);
 
 // Use a promise to handle async analytics support check
 const analytics: Promise<Analytics | null> = typeof window !== 'undefined' 
   ? isAnalyticsSupported().then(yes => yes ? getAnalytics(app) : null) 
   : new Promise(resolve => resolve(null));
 
-// Crashlytics for web is not initialized via a direct import in the modular SDK.
-// It is enabled via the Firebase console and the SDK snippet.
-const crashlytics = null;
 
-export { app, auth, analytics, crashlytics };
+export { app, auth, firestore, analytics };

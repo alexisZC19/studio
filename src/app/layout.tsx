@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { FirebaseClientProvider } from "@/firebase";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -38,14 +38,14 @@ export default function RootLayout({
         />
       </head>
       <body className={cn("font-body antialiased", poppins.variable)}>
-        <AuthProvider>
+        <FirebaseClientProvider>
           <div className="relative flex min-h-screen w-full flex-col">
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
           <Toaster />
-        </AuthProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );

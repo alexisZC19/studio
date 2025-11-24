@@ -4,8 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { LogOut, User as UserIcon } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { auth } from "@/lib/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +16,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logo } from "../icons/Logo";
+import { useAuth, useUser } from "@/firebase";
 
 export function Header() {
-  const { user, loading } = useAuth();
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -39,8 +39,8 @@ export function Header() {
         </Link>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
-            {loading ? (
-              <Skeleton className="h-8 w-20 rounded-md" />
+            {isUserLoading ? (
+              <Skeleton className="h-8 w-8 rounded-full" />
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
