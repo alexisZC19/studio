@@ -1,45 +1,42 @@
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
-import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'
-import { getAnalytics } from "firebase/analytics";
-import type { Analytics } from "firebase/analytics";
+import { getAnalytics, type Analytics } from "firebase/analytics";
+import { getPerformance, type FirebasePerformance } from 'firebase/performance';
+import { getRemoteConfig, type RemoteConfig } from 'firebase/remote-config';
 
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
+  let firebaseApp: FirebaseApp;
   if (!getApps().length) {
-    // Important! initializeApp() is called without any arguments because Firebase App Hosting
-    // integrates with the initializeApp() function to provide the environment variables needed to
-    // populate the FirebaseOptions in production. It is critical that we attempt to call initializeApp()
-    // without arguments.
-    let firebaseApp;
     try {
-      // Attempt to initialize via Firebase App Hosting environment variables
       firebaseApp = initializeApp();
     } catch (e) {
-      // Only warn in production because it's normal to use the firebaseConfig to initialize
-      // during development
       if (process.env.NODE_ENV === "production") {
         console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
       }
       firebaseApp = initializeApp(firebaseConfig);
     }
-
-    return getSdks(firebaseApp);
+  } else {
+    firebaseApp = getApp();
   }
 
-  // If already initialized, return the SDKs with the already initialized App
-  return getSdks(getApp());
+  return getSdks(firebaseApp);
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {
+  const isBrowser = typeof window !== 'undefined';
   return {
     firebaseApp,
     auth: getAuth(firebaseApp),
     firestore: getFirestore(firebaseApp),
+    analytics: isBrowser ? getAnalytics(firebaseApp) : null,
+    performance: isBrowser ? getPerformance(firebaseApp) : null,
+    remoteConfig: isBrowser ? getRemoteConfig(firebaseApp) : null,
   };
 }
 
@@ -51,4 +48,4 @@ export * from './non-blocking-updates';
 export * from './non-blocking-login';
 export * from './errors';
 export * from './error-emitter';
-export { type Analytics };
+export { type Analytics, type FirebasePerformance, type RemoteConfig };

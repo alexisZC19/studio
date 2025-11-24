@@ -1,18 +1,22 @@
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
-import { FirebaseApp } from 'firebase/app';
-import { Firestore } from 'firebase/firestore';
-import { Auth, User, onAuthStateChanged } from 'firebase/auth';
+import { type FirebaseApp } from 'firebase/app';
+import { type Firestore } from 'firebase/firestore';
+import { type Auth, type User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
-import type { Analytics } from 'firebase/analytics';
-import { getAnalytics, isSupported } from 'firebase/analytics';
+import { type Analytics, getAnalytics, isSupported } from 'firebase/analytics';
+import { type FirebasePerformance } from 'firebase/performance';
+import { type RemoteConfig } from 'firebase/remote-config';
 
 interface FirebaseProviderProps {
   children: ReactNode;
   firebaseApp: FirebaseApp;
   firestore: Firestore;
   auth: Auth;
+  analytics: Analytics | null;
+  performance: FirebasePerformance | null;
+  remoteConfig: RemoteConfig | null;
 }
 
 // Internal state for user authentication
@@ -29,6 +33,8 @@ export interface FirebaseContextState {
   firestore: Firestore | null;
   auth: Auth | null; // The Auth service instance
   analytics: Analytics | null;
+  performance: FirebasePerformance | null;
+  remoteConfig: RemoteConfig | null;
   // User authentication state
   user: User | null;
   isUserLoading: boolean; // True during initial auth check
@@ -41,6 +47,8 @@ export interface FirebaseServicesAndUser {
   firestore: Firestore;
   auth: Auth;
   analytics: Analytics | null;
+  performance: FirebasePerformance | null;
+  remoteConfig: RemoteConfig | null;
   user: User | null;
   isUserLoading: boolean;
   userError: Error | null;
@@ -64,24 +72,15 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   firebaseApp,
   firestore,
   auth,
+  analytics,
+  performance,
+  remoteConfig
 }) => {
   const [userAuthState, setUserAuthState] = useState<UserAuthState>({
     user: null,
     isUserLoading: true, // Start loading until first auth event
     userError: null,
   });
-
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
-
-  useEffect(() => {
-    if (firebaseApp) {
-      isSupported().then((supported) => {
-        if (supported) {
-          setAnalytics(getAnalytics(firebaseApp));
-        }
-      });
-    }
-  }, [firebaseApp]);
 
   // Effect to subscribe to Firebase auth state changes
   useEffect(() => {
@@ -114,11 +113,13 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       firestore: servicesAvailable ? firestore : null,
       auth: servicesAvailable ? auth : null,
       analytics,
+      performance,
+      remoteConfig,
       user: userAuthState.user,
       isUserLoading: userAuthState.isUserLoading,
       userError: userAuthState.userError,
     };
-  }, [firebaseApp, firestore, auth, userAuthState, analytics]);
+  }, [firebaseApp, firestore, auth, analytics, performance, remoteConfig, userAuthState]);
 
   return (
     <FirebaseContext.Provider value={contextValue}>
@@ -132,7 +133,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
  * Hook to access core Firebase services and user authentication state.
  * Throws error if core services are not available or used outside provider.
  */
-export const useFirebase = (): Omit<FirebaseServicesAndUser, 'analytics'> => {
+export const useFirebase = (): FirebaseServicesAndUser => {
   const context = useContext(FirebaseContext);
 
   if (context === undefined) {
@@ -147,6 +148,9 @@ export const useFirebase = (): Omit<FirebaseServicesAndUser, 'analytics'> => {
     firebaseApp: context.firebaseApp,
     firestore: context.firestore,
     auth: context.auth,
+    analytics: context.analytics,
+    performance: context.performance,
+    remoteConfig: context.remoteConfig,
     user: context.user,
     isUserLoading: context.isUserLoading,
     userError: context.userError,
@@ -179,6 +183,25 @@ export const useAnalytics = (): Analytics | null => {
   }
   return context.analytics;
 }
+
+/** Hook to access Performance instance. */
+export const usePerformance = (): FirebasePerformance | null => {
+  const context = useContext(FirebaseContext);
+  if (context === undefined) {
+    throw new Error('usePerformance must be used within a FirebaseProvider.');
+  }
+  return context.performance;
+}
+
+/** Hook to access Remote Config instance. */
+export const useRemoteConfig = (): RemoteConfig | null => {
+  const context = useContext(FirebaseContext);
+  if (context === undefined) {
+    throw new Error('useRemoteConfig must be used within a FirebaseProvider.');
+  }
+  return context.remoteConfig;
+}
+
 
 type MemoFirebase <T> = T & {__memo?: boolean};
 
