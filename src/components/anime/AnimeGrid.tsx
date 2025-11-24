@@ -3,21 +3,19 @@
 import { useEffect } from "react";
 import type { AnimePlaceholder } from "@/lib/placeholder-images";
 import { AnimeCard } from "./AnimeCard";
-import { useFirebase } from "@/firebase";
+import { useAnalytics } from "@/firebase";
 import { logEvent } from "firebase/analytics";
-import type { Analytics } from "firebase/analytics";
-
 
 interface AnimeGridProps {
   animes: AnimePlaceholder[];
 }
 
 export function AnimeGrid({ animes }: AnimeGridProps) {
-  const { analytics } = useFirebase();
+  const analytics = useAnalytics();
 
   useEffect(() => {
     if (analytics) {
-      logEvent(analytics as Analytics, 'screen_view', {
+      logEvent(analytics, 'screen_view', {
         firebase_screen: 'HomePage',
         firebase_screen_class: 'AnimeGrid'
       });

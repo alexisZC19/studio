@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { AnimePlaceholder } from "@/lib/placeholder-images";
-import { useFirebase } from "@/firebase";
+import { useAnalytics } from "@/firebase";
 import { logEvent } from "firebase/analytics";
 import type { Analytics } from "firebase/analytics";
 
@@ -19,11 +19,11 @@ interface AnimeCardProps {
 }
 
 export function AnimeCard({ anime }: AnimeCardProps) {
-  const { analytics } = useFirebase();
+  const analytics = useAnalytics();
   
   const handleCardClick = () => {
     if (analytics) {
-      logEvent(analytics as Analytics, 'select_content', {
+      logEvent(analytics, 'select_content', {
         content_type: 'anime',
         item_id: anime.id,
       });

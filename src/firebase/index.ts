@@ -36,12 +36,10 @@ export function initializeFirebase() {
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {
-  const analytics = typeof window !== 'undefined' ? getAnalytics(firebaseApp) : null;
   return {
     firebaseApp,
     auth: getAuth(firebaseApp),
     firestore: getFirestore(firebaseApp),
-    analytics
   };
 }
 
@@ -53,4 +51,4 @@ export * from './non-blocking-updates';
 export * from './non-blocking-login';
 export * from './errors';
 export * from './error-emitter';
-export { Analytics };
+export { type Analytics };
