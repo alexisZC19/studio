@@ -1,0 +1,87 @@
+/**
+ * This ruleset enforces a security model with two distinct access patterns:
+ * 1. A strict user-ownership model for private user data.
+ * 2. A public-read, admin-only write model for shared catalog data.
+ *
+ * Core Philosophy:
+ * The primary goal is to isolate user-specific information while making general
+ * application data (like the anime catalog) publicly accessible for reading.
+ * This segregation ensures user privacy and provides a secure foundation for the app.
+ *
+ * Data Structure:
+ * - /users/{userId}: All private user profile data is stored here. Access is
+ *   strictly controlled, and rules ensure a user can only ever interact with
+ *   their own document within this collection.
+ * - /anime/{animeId}: A top-level collection containing the public anime catalog.
+ *   This data is readable by anyone but cannot be modified by client applications,
+ *   protecting its integrity. It is assumed this data is managed by a trusted
+ *   backend service or admin SDK.
+ *
+ * Key Security Decisions:
+ * - User Isolation: Users cannot read or list other users' profiles. The path
+ *   `/users/{userId}` is the primary mechanism for enforcing this boundary.
+ * - Public Catalog: The `/anime` collection is intentionally public for reads
+ *   to allow any user or visitor to browse the content.
+ * - Write Protection: All client-side writes to the public `/anime` collection
+ *   are disabled to prevent tampering. This is a secure-by-default posture.
+ * - Denormalization for Authorization: This ruleset is simple and does not
+ *   require complex denormalization. User profiles contain an array of
+ *   `favoriteAnimeIds`, a simple and efficient way to store user preferences
+ *   without needing costly lookups in security rules.
+ * - Structural Segregation: The use of a separate `/users` collection for private
+ *   data and an `/anime` collection for public data is a deliberate design choice.
+ *   This separation creates a clear, secure, and performant boundary between
+ *   different types of data, especially for list operations.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for reusable logic
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Enforces that a user can only create, read, update, or delete their own profile document.
+     * @path        /users/{userId}
+     * @allow       A signed-in user (auth.uid: 'user123') can create their own profile at `/users/user123`.
+     * @deny        An authenticated user (auth.uid: 'user456') cannot read the profile at `/users/user123`.
+     * @principle   Restricts access to a user's own data tree using path-based ownership.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      // A user can create their own profile. The document's 'id' field must match the user's UID.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+
+      // The owner can update their profile. The 'id' field must remain unchanged.
+      allow update: if isOwner(userId) && resource != null && request.resource.data.id == resource.data.id;
+
+      // The owner can delete their profile document.
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Allows public read access to the anime catalog but denies all client-side writes.
+     * @path        /anime/{animeId}
+     * @allow       Any user, signed-in or not, can (get) or (list) documents from the /anime collection.
+     * @deny        A signed-in user cannot (create), (update), or (delete) an anime document.
+     * @principle   Enables public consumption of data while protecting its integrity by disallowing client modifications.
+     */
+    match /anime/{animeId} {
+      allow get: if true;
+      allow list: if true;
+
+      // Writes are disallowed from the client. Data is managed by a trusted backend.
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
