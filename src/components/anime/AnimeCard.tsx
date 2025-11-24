@@ -5,29 +5,29 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import type { AnimePlaceholder } from "@/lib/placeholder-images";
-import { analytics } from "@/lib/firebase";
+import { useFirebase } from "@/firebase";
 import { logEvent } from "firebase/analytics";
+import type { Analytics } from "firebase/analytics";
+
 
 interface AnimeCardProps {
   anime: AnimePlaceholder;
 }
 
 export function AnimeCard({ anime }: AnimeCardProps) {
+  const { analytics } = useFirebase();
   
   const handleCardClick = () => {
-    analytics.then(an => {
-      if (an) {
-        logEvent(an, 'select_content', {
-          content_type: 'anime',
-          item_id: anime.id,
-        });
-      }
-    });
+    if (analytics) {
+      logEvent(analytics as Analytics, 'select_content', {
+        content_type: 'anime',
+        item_id: anime.id,
+      });
+    }
   };
 
   return (

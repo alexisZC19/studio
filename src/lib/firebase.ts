@@ -2,8 +2,9 @@
 
 import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getAnalytics, isSupported as isAnalyticsSupported, Analytics } from "firebase/analytics";
+import { getAnalytics, isSupported as isAnalyticsSupported, Analytics, logEvent as logAnalyticsEvent } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+
 
 // IMPORTANT: Replace with your own Firebase configuration
 const firebaseConfig: FirebaseOptions = {
@@ -25,5 +26,14 @@ const analytics: Promise<Analytics | null> = typeof window !== 'undefined'
   ? isAnalyticsSupported().then(yes => yes ? getAnalytics(app) : null) 
   : new Promise(resolve => resolve(null));
 
+// Wrapper for logging events to Analytics
+const logEvent = (eventName: string, eventParams?: { [key: string]: any }) => {
+  analytics.then(an => {
+    if (an) {
+      logAnalyticsEvent(an, eventName, eventParams);
+    }
+  });
+};
 
-export { app, auth, firestore, analytics };
+
+export { app, auth, firestore, analytics, logEvent };
